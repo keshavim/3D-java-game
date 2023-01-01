@@ -18,7 +18,7 @@ repositories {
 
 application {
     // Define the main class for the application.
-    mainClass = 'towerdefender.App'
+    mainClass = 'towerdefender.Main'
 }
 
 tasks.named('test') {
