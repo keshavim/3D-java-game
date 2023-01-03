@@ -12,17 +12,16 @@ public class Transform extends Component{
     private Quaternionf rotation;
     private float scale;
     
-    @Override
-    public void start() {
-        // TODO Auto-generated method stub
-        modelMatrix =new Matrix4f();
+    public Transform(){
+        modelMatrix = new Matrix4f();
         position = new Vector3f();
         rotation = new Quaternionf();
         scale = 1;
     }
+    
 
     @Override
-    public void update() {
+    public void update(float dt) {
         // TODO Auto-generated method stub
         //updates the model matrix of the transform
         modelMatrix.translationRotateScale(position, rotation, scale);

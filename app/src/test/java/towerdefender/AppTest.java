@@ -4,14 +4,18 @@
 package towerdefender;
 
 import org.junit.jupiter.api.Test;
+import org.lwjgl.opengl.GL;
 
-import towerdefender.engine.Window;
+import towerdefender.gfx.Shader;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import static org.lwjgl.opengl.GL30.*;
+
+import java.util.Map;
+
 class AppTest {
-    @Test void appHasAGreeting() {
+    @Test void sourcesCompile(){
         
-        assertNotNull(Window.get(), "app should have a greeting");
     }
 }

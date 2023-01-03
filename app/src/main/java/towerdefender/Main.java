@@ -16,16 +16,12 @@ public class Main {
     public static void main(String[] args) {
         new Main().run();
     }
-
-    public Main(){
+    private void init(){
         Window.init("blank", 1000, 1000);
         Renderer.init();
         Scene.changeScene(0);
     }
-
-    //!delta time may not work propory. fix later
-    public void run(){
-
+    private void loop(){
         float startTime = Main.getTime();
         float endTime;
         float deltaTime = -1.0f;
@@ -43,11 +39,17 @@ public class Main {
             deltaTime = endTime - startTime;
             startTime = endTime;
         }
-        cleanup();
     }
-    public void cleanup(){
+    private void cleanup(){
         Window.cleanup();
         Renderer.cleanup();
         Scene.getCurrentScene().cleanup();
     }
+    //!delta time may not work propory. fix later
+    public void run(){
+        init();
+        loop();
+        cleanup();
+    }
+    
 }

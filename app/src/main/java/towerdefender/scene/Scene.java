@@ -25,9 +25,7 @@ public abstract class Scene {
         for(GameObject obj: gameObjects){
             obj.start();
         }
-        //calls the init method in current scene
-        currentScene.init();
-        isRunning=true;
+        isRunning = true;
     }
 
     public void addGameObjectToScene(GameObject obj){
@@ -51,6 +49,7 @@ public abstract class Scene {
             default:
                 throw new RuntimeException("Scene id does not exist");
         }
+        currentScene.init();
         currentScene.start();
     }
     public static Scene getCurrentScene() {
