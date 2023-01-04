@@ -1,6 +1,9 @@
 package towerdefender.ecs;
 
 import java.util.List;
+
+import towerdefender.scene.Scene;
+
 import java.util.ArrayList;
 
 //gameobject: it does things based on the componets it has within it

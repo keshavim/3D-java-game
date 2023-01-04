@@ -5,44 +5,52 @@ package towerdefender;
 
 import towerdefender.engine.Window;
 import towerdefender.gfx.Renderer;
+import towerdefender.gfx.Shader;
 import towerdefender.scene.Scene;
 
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class Main {
 
     public static float timeStarted = System.nanoTime();
     public static float getTime(){return (float)((System.nanoTime() - timeStarted) * 1E-9);}
 
+    Renderer renderer;
+
     public static void main(String[] args) {
         new Main().run();
     }
     private void init(){
         Window.init("blank", 1000, 1000);
-        Renderer.init();
+        renderer = new Renderer();
         Scene.changeScene(0);
     }
     private void loop(){
-        float startTime = Main.getTime();
+        float startTime = (float)glfwGetTime();
         float endTime;
         float deltaTime = -1.0f;
+
+        Shader shader = new Shader("Default.glsl");
+
 
         while(!Window.shouldClose()){
             Window.pollEvents();
 
-            Renderer.render();
+            renderer.render();
             if(deltaTime >= 0)
-                Scene.updateCurrentScene(deltaTime);
+                renderer.bindShader(shader);
+                Scene.getCurrentScene().update(deltaTime);;
             
             Window.update();
 
-            endTime = Main.getTime();
+            endTime = (float)glfwGetTime();
             deltaTime = endTime - startTime;
             startTime = endTime;
         }
     }
     private void cleanup(){
         Window.cleanup();
-        Renderer.cleanup();
+        renderer.cleanup();
         Scene.getCurrentScene().cleanup();
     }
     //!delta time may not work propory. fix later

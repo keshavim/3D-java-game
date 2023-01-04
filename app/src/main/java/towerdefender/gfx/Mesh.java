@@ -1,10 +1,8 @@
-package towerdefender.ecs.components;
+package towerdefender.gfx;
 
-import org.lwjgl.opengl.GL33;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-import towerdefender.ecs.Component;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -12,45 +10,12 @@ import java.util.*;
 
 import static org.lwjgl.opengl.GL33.*;
 
-
-public class Mesh extends Component{
+//contains the information needed to draw shapes
+public class Mesh{
     private int numVertices;
     private int vao;
     private List<Integer> vboList;
 
-
-    public Mesh(float[] vertices,  int[] indices){
-        //auto cleans up buffers
-        try(MemoryStack stack = MemoryStack.stackPush()){
-            numVertices = indices.length;
-            vboList = new ArrayList<>();
-
-            vao = glGenVertexArrays();
-            glBindVertexArray(vao);
-
-            //creating and seting the the vertex buffers
-            //vertices
-            int vbo = glGenBuffers();
-            vboList.add(vbo);
-            FloatBuffer vBuffer = stack.callocFloat(vertices.length);
-            vBuffer.put(0, vertices);
-            glBindBuffer(GL_ARRAY_BUFFER, vao);
-            glBufferData(GL_ARRAY_BUFFER, vBuffer, GL_STATIC_DRAW);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-            glEnableVertexAttribArray(0);
-
-            //indices
-            vbo = glGenBuffers();
-            vboList.add(vbo);
-            IntBuffer iBuffer = stack.callocInt(indices.length);
-            iBuffer.put(0, indices);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, iBuffer, GL_STATIC_DRAW);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-        }
-    }
     public Mesh(float[] vertices, float[] texCoords,  int[] indices){
         //auto cleans up buffers
         try(MemoryStack stack = MemoryStack.stackPush()){
@@ -94,8 +59,6 @@ public class Mesh extends Component{
         }
     }
 
-    
-
     public int getNumVertices() {
         return numVertices;
     }
@@ -103,8 +66,7 @@ public class Mesh extends Component{
     public final int getVao() {
         return vao;
     }
-    
-    @Override
+
     public void cleanup() {
         vboList.forEach(bo -> glDeleteBuffers(bo));
         glDeleteVertexArrays(vao);

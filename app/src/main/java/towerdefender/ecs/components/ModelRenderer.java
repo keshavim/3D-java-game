@@ -3,22 +3,27 @@ package towerdefender.ecs.components;
 import towerdefender.ecs.Component;
 import static org.lwjgl.opengl.GL33.*;
 
+//renders the model assosiated with the gameobject
 public class ModelRenderer extends Component {
 
-    Mesh mesh;
+    Material material;
     @Override
     public void start(){
-        mesh = gameObject.getComponent(Mesh.class);
-        if(mesh == null){
-            throw new RuntimeException("ModelRenderer error: mesh is null in "
+        material = gameObject.getComponent(Material.class);
+        if(material == null){
+            throw new RuntimeException("ModelRenderer error: material is null in "
                                     + gameObject.getName());
         }
     }
     @Override
     public void update(float dt) {
         // TODO Auto-generated method stub
-        glBindVertexArray(mesh.getVao());
-        glDrawElements(GL_TRIANGLES, mesh.getNumVertices(), GL_UNSIGNED_INT, 0);
+
+        glActiveTexture(GL_TEXTURE0);
+        material.getTexture().bind();
+
+        glBindVertexArray(material.getMesh().getVao());
+        glDrawElements(GL_TRIANGLES, material.getMesh().getNumVertices(), GL_UNSIGNED_INT, 0);
         
     }
     

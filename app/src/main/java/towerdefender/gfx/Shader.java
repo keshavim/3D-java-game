@@ -18,12 +18,15 @@ import static org.lwjgl.opengl.GL33.*;
 public class Shader {
     
     private int id;
+    private String filePath;
     Map<Integer, String> sourceStrings;
 
     public Shader(String fileName){
         id = glCreateProgram();
+        
+        filePath = Shader.getFile(fileName);
+        sourceStrings = readFile(filePath);
 
-        sourceStrings = readFile(Shader.getFile(fileName));
 
         List<Integer> compiledShaders = new ArrayList<>();
         compiledShaders.add(compileShader(GL_VERTEX_SHADER));
@@ -107,25 +110,25 @@ public class Shader {
         }
         return location;
     }
-    public void setUniform(String name, int value){
+    public void uploadUniform(String name, int value){
         glUniform1i(getLocation(name), value);
     }
-    public void setUniform(String name, float value){
+    public void uploadUniform(String name, float value){
         glUniform1f(getLocation(name), value);
     }
-    public void setUniform(String name, boolean value){
+    public void uploadUniform(String name, boolean value){
         glUniform1i(getLocation(name), value ? 1 : 0);
     }
-    public void setUniform(String name, Vector2f value){
+    public void uploadUniform(String name, Vector2f value){
         glUniform2f(getLocation(name), value.x, value.y);
     }
-    public void setUniform(String name, Vector3f value){
+    public void uploadUniform(String name, Vector3f value){
         glUniform3f(getLocation(name), value.x, value.y, value.z);
     }
-    public void setUniform(String name, Vector4f value){
+    public void uploadUniform(String name, Vector4f value){
         glUniform4f(getLocation(name), value.x, value.y, value.z, value.w);
     }
-    public void setUniform(String name, Matrix4f value){
+    public void uploadUniform(String name, Matrix4f value){
         try(MemoryStack stack = MemoryStack.stackPush()){
             glUniformMatrix4fv(getLocation(name), false, value.get(stack.mallocFloat(16)));
         }

@@ -22,7 +22,6 @@ public class level1Scene extends Scene{
         }
         if(changeScene && changeTime > 0){
             changeTime -= dt;
-            Renderer.getBg().sub(dt * 5f, dt * 5f, dt * 5f, 0);
         } else if(changeScene){
             Scene.changeScene(0);
             changeTime = 1f;
