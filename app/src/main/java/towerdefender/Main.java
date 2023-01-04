@@ -30,7 +30,6 @@ public class Main {
         float endTime;
         float deltaTime = -1.0f;
 
-        Shader shader = new Shader("Default.glsl");
 
 
         while(!Window.shouldClose()){
@@ -38,8 +37,7 @@ public class Main {
 
             renderer.render();
             if(deltaTime >= 0)
-                renderer.bindShader(shader);
-                Scene.getCurrentScene().update(deltaTime);;
+                Scene.getCurrentScene().update(deltaTime);
             
             Window.update();
 
