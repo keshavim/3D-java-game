@@ -2,7 +2,6 @@ package towerdefender.ecs;
 
 import java.util.List;
 
-import towerdefender.scene.Scene;
 
 import java.util.ArrayList;
 

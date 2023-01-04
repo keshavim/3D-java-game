@@ -3,13 +3,9 @@ package towerdefender.scene;
 import towerdefender.ecs.GameObject;
 import towerdefender.ecs.components.Material;
 import towerdefender.ecs.components.ModelRenderer;
-import towerdefender.gfx.Mesh;
 import towerdefender.gfx.Shader;
-import towerdefender.gfx.Texture;
 
-import static org.lwjgl.opengl.GL30.*;
 
-import org.joml.Vector4f;
 
 
 

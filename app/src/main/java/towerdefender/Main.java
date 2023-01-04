@@ -5,7 +5,6 @@ package towerdefender;
 
 import towerdefender.engine.Window;
 import towerdefender.gfx.Renderer;
-import towerdefender.gfx.Shader;
 import towerdefender.scene.Scene;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;

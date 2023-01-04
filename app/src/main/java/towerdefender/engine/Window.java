@@ -2,7 +2,6 @@ package towerdefender.engine;
 
 
 
-import org.lwjgl.opengl.GL;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 

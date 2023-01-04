@@ -15,7 +15,7 @@ public class Renderer {
     private Callback debugproc;
     private static Vector4f bg;
 
-    private static Shader currentShader;
+    
 
 
     public Renderer(){
@@ -39,12 +39,5 @@ public class Renderer {
 
     public void cleanup(){
         if(debugproc != null) debugproc.free();
-    }
-
-    public static void bindShader(Shader shader) {
-        currentShader = shader;
-    }
-    public static Shader getCurrentShader() {
-        return currentShader;
     }
 }
