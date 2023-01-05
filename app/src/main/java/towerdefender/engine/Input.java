@@ -11,13 +11,13 @@ import static org.lwjgl.glfw.GLFW.*;
 //singleton that controls Input
 public class Input {
     private static Input instance = null;
-    public static final float MOUSE_SENSITIVITY = 0.1f;
+    public static final float MOUSE_SENSITIVITY = 1f;
 
     //for keyboard
     private boolean[] keys;
 
     //for mouse
-    private Vector2f currentPos, lastPos, displVec;
+    private Vector2f currentPos, lastPos, deltaPos;
     private boolean[] mouseButtons;
     private boolean inWindow;
     
@@ -25,7 +25,7 @@ public class Input {
     private Input(){
         lastPos = new Vector2f(-1,-1);
         currentPos = new Vector2f();
-        displVec = new Vector2f();
+        deltaPos = new Vector2f();
         mouseButtons = new boolean[GLFW_MOUSE_BUTTON_LAST];
         keys = new boolean[GLFW_KEY_LAST];
         inWindow = false;
@@ -42,6 +42,8 @@ public class Input {
         glfwSetCursorPosCallback(windowHandle, (handle,  xpos, ypos)->{
             get().currentPos.x = (float) xpos;
             get().currentPos.y = (float) ypos;
+
+            
         });
         glfwSetCursorEnterCallback(windowHandle, (handle, entered)-> get().inWindow = entered);
         glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mode)->{
@@ -51,29 +53,32 @@ public class Input {
         glfwSetKeyCallback(windowHandle, (handle, key, scancode, action, mods) -> {
             get().keys[key] = action != GLFW_RELEASE;//makes it true if pressed or repeated
         });
+
+
     }
-    //gets mouse positions and deltas
     public static void mouseInput(){
-        get().displVec.zero();
-        if(get().lastPos.x > 0 && get().lastPos.y > 0 && get().inWindow){
+        //gets the amount the mouse moves, delta position
+        get().deltaPos.zero();
+        if(get().inWindow){
             double deltax = get().currentPos.x - get().lastPos.x;
             double deltay = get().currentPos.y - get().lastPos.y;
 
             if(deltax != 0){
-                get().displVec.x = (float) deltax;
+                get().deltaPos.x = (float) deltax * MOUSE_SENSITIVITY;
             }
             if(deltay != 0){
-                get().displVec.y = (float) deltay;
+                get().deltaPos.y = (float) deltay * MOUSE_SENSITIVITY;
             }
         }
-        get().lastPos.set(get().currentPos);
+        get().lastPos.x = (float)get().currentPos.x;
+        get().lastPos.y = (float)get().currentPos.y;
     }
 
     public static Vector2f getCurrentPos() {
         return get().currentPos;
     }
-    public static Vector2f getDisplVec() {
-        return get().displVec;
+    public static Vector2f getDeltaPos() {
+        return get().deltaPos;
     }
 
     public static boolean mouseButtonPressed(int button) {

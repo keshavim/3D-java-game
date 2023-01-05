@@ -9,15 +9,12 @@ import towerdefender.scene.Scene;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
-public class Main {
-
-    public static float timeStarted = System.nanoTime();
-    public static float getTime(){return (float)((System.nanoTime() - timeStarted) * 1E-9);}
+//contains the game loop
+public class Game {
 
     Renderer renderer;
-
     public static void main(String[] args) {
-        new Main().run();
+        new Game().run();
     }
     private void init(){
         Window.init("blank", 1000, 1000);
@@ -50,7 +47,7 @@ public class Main {
         renderer.cleanup();
         Scene.getCurrentScene().cleanup();
     }
-    //!delta time may not work propory. fix later
+
     public void run(){
         init();
         loop();
