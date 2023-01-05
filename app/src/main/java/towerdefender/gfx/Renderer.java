@@ -24,6 +24,8 @@ public class Renderer {
         //set render settings
 
         bg = new Vector4f();
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void render(){

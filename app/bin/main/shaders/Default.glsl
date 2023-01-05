@@ -3,11 +3,14 @@
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec2 aTexCoords;
 
+uniform mat4 uProj;
+uniform mat4 uView;
+
 out vec2 fTexCoords;
 
 void main(){
     fTexCoords = aTexCoords;
-    gl_Position = vec4(aPosition, 1.0f);
+    gl_Position = uProj * uView * vec4(aPosition, 1.0f);
 }
 
 

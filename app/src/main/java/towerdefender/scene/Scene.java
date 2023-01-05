@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import towerdefender.ecs.GameObject;
+import towerdefender.engine.Camera;
 
 public abstract class Scene {
 
@@ -12,6 +13,8 @@ public abstract class Scene {
     protected boolean changeScene = false;
     protected float changeTime = 1f;
     protected boolean isRunning = false;
+
+    protected Camera camera;
 
     protected List<GameObject> gameObjects = new ArrayList<>();
 

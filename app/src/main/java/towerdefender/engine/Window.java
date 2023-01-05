@@ -69,6 +69,8 @@ public class Window {
         glfwSwapInterval(1);
         glfwShowWindow(get().handle);
 
+        glfwSetInputMode(get().handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     }
 
     //move to another class
@@ -77,6 +79,17 @@ public class Window {
     }
     public static void pollEvents(){
         glfwPollEvents();
+        Input.mouseInput();
+        if(Input.keyPressed(GLFW_KEY_ESCAPE)){
+            glfwSetWindowShouldClose(get().handle, true);
+        }
+        if(Input.keyPressed(GLFW_KEY_TAB)){
+            int mode = glfwGetInputMode(get().handle, GLFW_CURSOR);
+            if(mode == GLFW_CURSOR_DISABLED) 
+                glfwSetInputMode(get().handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            else if(mode == GLFW_CURSOR_NORMAL)
+                glfwSetInputMode(get().handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
     }
 
     public static void update(){
