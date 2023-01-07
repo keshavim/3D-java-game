@@ -61,4 +61,8 @@ public abstract class Scene {
     public static void updateCurrentScene(float dt){
         currentScene.update(dt);
     }
+
+    public Camera getCamera() {
+        return camera;
+    }
 }

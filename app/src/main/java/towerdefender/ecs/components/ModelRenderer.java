@@ -1,7 +1,11 @@
 package towerdefender.ecs.components;
 
 import towerdefender.ecs.Component;
+import towerdefender.gfx.Renderer;
+
 import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
+
 
 //renders the model assosiated with the gameobject
 public class ModelRenderer extends Component {
@@ -21,6 +25,9 @@ public class ModelRenderer extends Component {
 
         glActiveTexture(GL_TEXTURE0);
         material.getTexture().bind();
+
+        Transform t = gameObject.getComponent(Transform.class);
+        Renderer.getCurrentShader().uploadUniform("uModel", t.getModelMatrix());
 
         glBindVertexArray(material.getMesh().getVao());
         glDrawElements(GL_TRIANGLES, material.getMesh().getNumVertices(), GL_UNSIGNED_INT, 0);

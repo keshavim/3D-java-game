@@ -5,48 +5,85 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import towerdefender.ecs.Component;
+import towerdefender.ecs.GameObject;
 
 public class Transform extends Component{
-    private Matrix4f modelMatrix;
-    private Vector3f position;
+    private Vector3f position, scale;
     private Quaternionf rotation;
-    private float scale;
-    
-    public Transform(){
-        modelMatrix = new Matrix4f();
-        position = new Vector3f();
-        rotation = new Quaternionf();
-        scale = 1;
-    }
-    
+    private Matrix4f modelMatrix;
 
-    @Override
-    public void update(float dt) {
-        // TODO Auto-generated method stub
-        //updates the model matrix of the transform
+    public GameObject gameObject = null;
+
+    public Transform(){
+        init(new Vector3f(), new Quaternionf(), new Vector3f(1));
+    }
+    public Transform(Vector3f position){
+        init(position, new Quaternionf(), new Vector3f(1));
+    }
+    public Transform(Vector3f position, Quaternionf rotation){
+        init(position, rotation, new Vector3f(1));
+    }
+    public Transform(Vector3f position, Quaternionf rotation, Vector3f scale){
+        init(position, rotation, scale);
+    }
+    private void init(Vector3f position, Quaternionf rotation, Vector3f scale){
+        this.position= position;
+        this.rotation = rotation;
+        this.scale = scale;
+        modelMatrix = new Matrix4f();
+        updateModel();
+    }
+
+    public void updateModel(){
         modelMatrix.translationRotateScale(position, rotation, scale);
     }
-
     public Matrix4f getModelMatrix() {
+        updateModel();
         return modelMatrix;
+    }
+
+    public void setPosition(Vector3f position) {
+        this.position = position;
+    }
+    public void move(Vector3f offset){
+        position.add(offset);
+    }
+    public void move(float x, float y, float z){
+        position.add(x, y, z);
     }
     public Vector3f getPosition() {
         return position;
     }
-    public Quaternionf getRotation() {
-        return rotation;
-    }
-    public float getScale() {
-        return scale;
-    }
-    public void setPosition(float x, float y, float z) {
-        position.set(x, y, z);
-    }
+
     public void setRotation(float x, float y, float z, float angle) {
         rotation.fromAxisAngleRad(x, y, z, angle);
     }
-    public void setScale(float scale) {
-        this.scale = scale;
+    public void rotate(float x, float y, float z, float angle){
+        rotation.rotateAxis(angle, x, y, z);
     }
-    //todo(maybe): add more methods for transforming
+    public void rotate(Vector3f offset, float angle){
+        rotation.rotateAxis(angle, offset);
+    }
+    public Quaternionf getRotation() {
+        return rotation;
+    }
+
+    public void setScale(float x, float y, float z) {
+        scale.set(x, y, z);
+    }
+    public void addScale(float x, float y, float z){
+        scale.add(x, y, z);
+    }
+    public Vector3f getScale() {
+        return scale;
+    }
+
+    @Override
+    public void update(float dt) {
+        //updateModel();
+    }
+
+
+    
+    
 }

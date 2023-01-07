@@ -1,7 +1,7 @@
 package towerdefender.ecs.components;
 
 import towerdefender.ecs.Component;
-import towerdefender.gfx.Mesh;
+import towerdefender.ecs.Mesh;
 import towerdefender.gfx.Texture;
 
 public class Material extends Component{
@@ -23,6 +23,12 @@ public class Material extends Component{
     }
     public Texture getTexture() {
         return texture;
+    }
+    
+    @Override
+    public void update(float dt) {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override

@@ -26,8 +26,6 @@ public class Game {
         float endTime;
         float deltaTime = -1.0f;
 
-
-
         while(!Window.shouldClose()){
             Window.pollEvents();
 

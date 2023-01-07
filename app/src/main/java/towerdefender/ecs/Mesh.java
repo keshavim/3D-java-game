@@ -1,4 +1,4 @@
-package towerdefender.gfx;
+package towerdefender.ecs;
 
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;

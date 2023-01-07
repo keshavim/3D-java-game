@@ -11,7 +11,7 @@ import static org.lwjgl.glfw.GLFW.*;
 //singleton that controls Input
 public class Input {
     private static Input instance = null;
-    public static final float MOUSE_SENSITIVITY = 1f;
+    public static final float MOUSE_SENSITIVITY = 1.5f;
 
     //for keyboard
     private boolean[] keys;

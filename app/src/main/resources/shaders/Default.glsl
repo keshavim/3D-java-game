@@ -5,12 +5,14 @@ layout (location = 1) in vec2 aTexCoords;
 
 uniform mat4 uProj;
 uniform mat4 uView;
+uniform mat4 uViewProj;
+uniform mat4 uModel;
 
 out vec2 fTexCoords;
 
 void main(){
     fTexCoords = aTexCoords;
-    gl_Position = uProj * uView * vec4(aPosition, 1.0f);
+    gl_Position = uViewProj * uModel * vec4(aPosition, 1.0f);
 }
 
 

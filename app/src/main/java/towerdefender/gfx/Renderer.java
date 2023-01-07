@@ -15,7 +15,7 @@ public class Renderer {
     private Callback debugproc;
     private static Vector4f bg;
 
-    
+    private static Shader curentShader;
 
 
     public Renderer(){
@@ -32,14 +32,22 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(bg.x,bg.y,bg.z,bg.w);
     }
-    public void setBg(float x, float y, float z, float w) {
+    public static void setBg(float x, float y, float z, float w) {
         bg.set(x,y,z,w);
     }
-    public Vector4f getBg() {
+    public static Vector4f getBg() {
         return bg;
     }
 
     public void cleanup(){
         if(debugproc != null) debugproc.free();
+    }
+
+    public static void bindShader(Shader shader){
+        curentShader = shader;
+        curentShader.bind();
+    }
+    public static Shader getCurrentShader() {
+        return curentShader;
     }
 }

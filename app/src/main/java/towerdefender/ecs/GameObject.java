@@ -2,6 +2,10 @@ package towerdefender.ecs;
 
 import java.util.List;
 
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+
+import towerdefender.ecs.components.Transform;
 
 import java.util.ArrayList;
 
@@ -14,6 +18,22 @@ public class GameObject {
     public GameObject(String name){
         this.name = name;
         components = new ArrayList<>();
+        addComponent(new Transform());
+    }
+    public GameObject(String name, Vector3f position){
+        this.name = name;
+        components = new ArrayList<>();
+        addComponent(new Transform(position));
+    }
+    public GameObject(String name, Vector3f position, Quaternionf rotation){
+        this.name = name;
+        components = new ArrayList<>();
+        addComponent(new Transform(position, rotation));
+    }
+    public GameObject(String name, Vector3f position, Quaternionf rotation, Vector3f scale){
+        this.name = name;
+        components = new ArrayList<>();
+        addComponent(new Transform(position, rotation, scale));
     }
 
     public String getName() {

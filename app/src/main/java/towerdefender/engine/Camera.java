@@ -7,6 +7,10 @@ import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import towerdefender.scene.Scene;
+
+import static org.lwjgl.glfw.GLFW.*;
+
 public class Camera {
     private Matrix4f projectionMatrix, viewMatrix;
     private Vector3f position, direction, right, up;
@@ -27,6 +31,24 @@ public class Camera {
         recalculate();
         adjustProjection();
 
+    }
+    public void update(float dt){
+        // test camera movement
+        if(Input.keyPressed(GLFW_KEY_A))
+            this.moveLeft(2 * dt);
+        if(Input.keyPressed(GLFW_KEY_D))
+            this.moveRight(2 * dt);
+        if(Input.keyPressed(GLFW_KEY_UP))
+            this.moveUp(2 * dt);
+        if(Input.keyPressed(GLFW_KEY_DOWN))
+            this.moveDown(2 * dt);
+        if(Input.keyPressed(GLFW_KEY_W))
+            this.moveForward(2 * dt);
+        if(Input.keyPressed(GLFW_KEY_S))
+            this.moveBackward(2 * dt);
+        
+        this.addRotation(Input.getDeltaPos().y * dt,
+                            Input.getDeltaPos().x * dt);
     }
     //recaulates the view matrix from an identity with new rotation and position values
     public void recalculate(){
@@ -106,5 +128,8 @@ public class Camera {
     public Matrix4f getProjectionMatrix() {
         return projectionMatrix;
     }
-    public Matrix4f getViewProj(){return projectionMatrix.mul(viewMatrix);}
+    public Matrix4f getViewProj(){
+        Matrix4f viewProj = new Matrix4f(projectionMatrix);
+        return viewProj.mul(viewMatrix);
+    }
 }

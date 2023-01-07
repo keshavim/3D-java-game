@@ -3,7 +3,8 @@ package towerdefender.scene;
 import towerdefender.ecs.GameObject;
 import towerdefender.ecs.components.Material;
 import towerdefender.ecs.components.ModelRenderer;
-
+import towerdefender.ecs.components.Transform;
+import towerdefender.gfx.Renderer;
 import towerdefender.gfx.Shader;
 import towerdefender.engine.Input;
 import towerdefender.engine.Camera;
@@ -119,43 +120,39 @@ public class TutorialScene extends Scene{
         System.out.println("in tutorial");
         
         cubeShader = new Shader("Default.glsl");
-        camera = new Camera(new Vector3f(0,0,2f));
+        camera = new Camera(new Vector3f(0,0,4f));
 
-        GameObject cube = new GameObject("cube");
-        cube.addComponent(new Material(vertexArray, textureCoord, indices, "ambitious.jpg"));
-        cube.addComponent(new ModelRenderer());
-        addGameObjectToScene(cube);
+        GameObject cube;
+        //creating one material that is used mutiple times
+        Material m = new Material(vertexArray, textureCoord, indices, "ambitious.jpg");
+        for(int j = 0; j < 10; j++){
+            for(int i = 0; i < 10; i++){
+                cube = new GameObject("cube-"+i+j, new Vector3f(j, i, 0));
+                cube.addComponent(m);
+                cube.addComponent(new ModelRenderer());
+                addGameObjectToScene(cube);
+            }
+        }
+        
+        
     }
 
     @Override
     public void update(float dt) {
-        // test camera movement
-        if(Input.keyPressed(GLFW_KEY_A)){
-            camera.moveLeft(1 * dt);
-        }else if(Input.keyPressed(GLFW_KEY_D)){
-            camera.moveRight(1 * dt);
-        }else if(Input.keyPressed(GLFW_KEY_UP)){
-            camera.moveUp(1 * dt);
-        }else if(Input.keyPressed(GLFW_KEY_DOWN)){
-            camera.moveDown(1 * dt);
-        }else if(Input.keyPressed(GLFW_KEY_W)){
-            camera.moveForward(1 * dt);
-        }else if(Input.keyPressed(GLFW_KEY_S)){
-            camera.moveBackward(1 * dt);
-        }
-        camera.addRotation(Input.getDeltaPos().y * dt,
-                            Input.getDeltaPos().x * dt);
+        
+        camera.update(dt);
         
         //temp drawing
-        cubeShader.bind();
-        cubeShader.uploadUniform("uProj", camera.getProjectionMatrix());
-        cubeShader.uploadUniform("uView", camera.getViewMatrix());
+        Renderer.bindShader(cubeShader);
+        // cubeShader.uploadUniform("uProj", camera.getProjectionMatrix());
+        // cubeShader.uploadUniform("uView", camera.getViewMatrix());
+        Renderer.getCurrentShader().uploadUniform("uViewProj", camera.getViewProj());
 
-        cubeShader.uploadUniform("uTexture", 0);
+        Renderer.getCurrentShader().uploadUniform("uTexture", 0);
 
         gameObjects.forEach(o -> o.update(dt));
 
-        cubeShader.unBind();
+        
     }
 
     @Override
