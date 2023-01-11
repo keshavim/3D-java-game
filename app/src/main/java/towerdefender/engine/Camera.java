@@ -1,22 +1,20 @@
 package towerdefender.engine;
 
-import java.util.Vector;
 
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import towerdefender.scene.Scene;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera {
-    private Matrix4f projectionMatrix, viewMatrix;
+    private Matrix4f projectionMatrix, viewMatrix, viewProj;
     private Vector3f position, direction, right, up;
     private Vector2f rotation;
 
     private final float fov = (float)Math.toRadians(60), zNear = 0.1f, zFar = 1000f;
+    private final float speed = 4;
 
     public Camera(Vector3f position){
         this.position = position;
@@ -27,25 +25,26 @@ public class Camera {
 
         viewMatrix = new Matrix4f();
         projectionMatrix = new Matrix4f();
+        viewProj = new Matrix4f();
 
         recalculate();
-        adjustProjection();
+        adjustProjection(Window.getWidth(), Window.getHeight());
 
     }
     public void update(float dt){
         // test camera movement
         if(Input.keyPressed(GLFW_KEY_A))
-            this.moveLeft(2 * dt);
+            this.moveLeft(speed * dt);
         if(Input.keyPressed(GLFW_KEY_D))
-            this.moveRight(2 * dt);
+            this.moveRight(speed * dt);
         if(Input.keyPressed(GLFW_KEY_UP))
-            this.moveUp(2 * dt);
+            this.moveUp(speed * dt);
         if(Input.keyPressed(GLFW_KEY_DOWN))
-            this.moveDown(2 * dt);
+            this.moveDown(speed * dt);
         if(Input.keyPressed(GLFW_KEY_W))
-            this.moveForward(2 * dt);
+            this.moveForward(speed * dt);
         if(Input.keyPressed(GLFW_KEY_S))
-            this.moveBackward(2 * dt);
+            this.moveBackward(speed * dt);
         
         this.addRotation(Input.getDeltaPos().y * dt,
                             Input.getDeltaPos().x * dt);
@@ -57,9 +56,9 @@ public class Camera {
                 .rotateY(rotation.y)
                 .translate(-position.x, -position.y, -position.z);
     }
-    public void adjustProjection(){
+    public void adjustProjection(int width, int height){
         projectionMatrix.identity();
-        projectionMatrix.setPerspective(fov, ((float)(Window.getWidth()/Window.getHeight())), zNear, zFar);
+        projectionMatrix.setPerspective(fov, ((float)(width/height)), zNear, zFar);
     }
 
     public void move(float xInc, float yInc, float zInc){
@@ -129,7 +128,7 @@ public class Camera {
         return projectionMatrix;
     }
     public Matrix4f getViewProj(){
-        Matrix4f viewProj = new Matrix4f(projectionMatrix);
-        return viewProj.mul(viewMatrix);
+        projectionMatrix.mul(viewMatrix, viewProj);
+        return viewProj;
     }
 }

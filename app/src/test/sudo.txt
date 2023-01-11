@@ -1,0 +1,49 @@
+class ModelLoader{
+    private ModelLoader();
+
+    public static Model loadModel(string id, string modelpath, string texturepath){
+        return loadModel(modelId, modelPath, textureCache, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices |
+            aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_CalcTangentSpace | aiProcess_LimitBoneWeights |
+            aiProcess_PreTransformVertices);
+    }
+    public static Model loadModel(string id, string modelpath, string texturepath, int flags){
+        File file = new file(modelPath);
+        if(!file.exists()){
+            throw
+        }
+
+        string modelPath = file.getParent();
+
+        AiScene aiScene = aiImportFile(modelPath, flags);
+        if(aiScene == null) throw
+
+        int numMaterials = aiScene.mNumMaterials();
+        List<Material> materialList = new ArrayList<>();
+        for (int i = 0; i < numMaterials; i++) {
+            AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
+            materialList.add(processMaterial(aiMaterial, modelDir, textureCache));
+        }
+
+        int numMeshes = aiScene.mNumMeshes();
+        PointerBuffer aiMeshes = aiScene.mMeshes();
+        Material defaultMaterial = new Material();
+        for (int i = 0; i < numMeshes; i++) {
+            AIMesh aiMesh = AIMesh.create(aiMeshes.get(i));
+            Mesh mesh = processMesh(aiMesh);
+            int materialIdx = aiMesh.mMaterialIndex();
+            Material material;
+            if (materialIdx >= 0 && materialIdx < materialList.size()) {
+                material = materialList.get(materialIdx);
+            } else {
+                material = defaultMaterial;
+            }
+            material.getMeshList().add(mesh);
+        }
+
+        if (!defaultMaterial.getMeshList().isEmpty()) {
+            materialList.add(defaultMaterial);
+        }
+
+        return new Model(modelId, materialList);
+    }
+}

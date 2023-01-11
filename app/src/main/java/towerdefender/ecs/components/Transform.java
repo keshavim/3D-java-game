@@ -31,15 +31,9 @@ public class Transform extends Component{
         this.rotation = rotation;
         this.scale = scale;
         modelMatrix = new Matrix4f();
-        updateModel();
-    }
-
-    public void updateModel(){
-        modelMatrix.translationRotateScale(position, rotation, scale);
     }
     public Matrix4f getModelMatrix() {
-        updateModel();
-        return modelMatrix;
+        return modelMatrix.translationRotateScale(position, rotation, scale);
     }
 
     public void setPosition(Vector3f position) {
@@ -71,16 +65,13 @@ public class Transform extends Component{
     public void setScale(float x, float y, float z) {
         scale.set(x, y, z);
     }
-    public void addScale(float x, float y, float z){
-        scale.add(x, y, z);
-    }
     public Vector3f getScale() {
         return scale;
     }
 
     @Override
     public void update(float dt) {
-        //updateModel();
+        
     }
 
 

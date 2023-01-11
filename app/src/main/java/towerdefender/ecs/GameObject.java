@@ -15,10 +15,10 @@ public class GameObject {
     private List<Component> components;
 
 
-    public GameObject(String name){
+    public GameObject(String name, Transform transform){
         this.name = name;
         components = new ArrayList<>();
-        addComponent(new Transform());
+        addComponent(transform);
     }
     public GameObject(String name, Vector3f position){
         this.name = name;

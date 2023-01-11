@@ -8,11 +8,11 @@ import org.lwjgl.glfw.GLFWVidMode;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.system.MemoryUtil.NULL;;
 
 public class Window {
     private long handle;//the actual window
-    private int width, height;
+    private int width, height, fbWidth, fbHeight;
     private String title;
 
     private static Window instance = null;
@@ -43,24 +43,32 @@ public class Window {
 
         //seting the width, height and title
         get().title = title;
+        GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        
         if(width > 0 && height > 0){
             get().width = width;
             get().height = height;
         } else{
             glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
-            GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
             if(vidMode != null){
                 get().width = vidMode.width() /2;
                 get().height = vidMode.height() /2;
             }
         }
-
         //create window
         get().handle = glfwCreateWindow(get().width, get().height, get().title, NULL, NULL);
         if(get().handle == NULL) throw new IllegalStateException("failed to create window");
+        glfwSetCursorPos(get().handle, width/2, height/2);
+        glfwSetWindowPos(get().handle, (vidMode.width() - get().width) / 2, (vidMode.height() - get().height) / 2);
         
         //callbacks
         Input.setCallBacks(get().handle);
+        glfwSetFramebufferSizeCallback(get().handle, (window, w, h) -> {
+            if (w > 0 && h > 0 && (get().fbWidth != w || get().fbHeight != h)) {
+                get().fbWidth = w;
+                get().fbHeight = h;
+            }
+        });
         
         //make opengl context
         glfwMakeContextCurrent(get().handle);
@@ -69,6 +77,12 @@ public class Window {
         glfwShowWindow(get().handle);
 
         glfwSetInputMode(get().handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        int[] arrWidth = new int[1];
+        int[] arrHeight = new int[1];
+        glfwGetFramebufferSize(get().handle, arrWidth, arrHeight);
+        get().width = arrWidth[0];
+        get().height = arrHeight[0];
 
     }
 
@@ -79,16 +93,6 @@ public class Window {
     public static void pollEvents(){
         glfwPollEvents();
         Input.mouseInput();
-        if(Input.keyPressed(GLFW_KEY_ESCAPE)){
-            glfwSetWindowShouldClose(get().handle, true);
-        }
-        if(Input.keyPressed(GLFW_KEY_TAB)){
-            int mode = glfwGetInputMode(get().handle, GLFW_CURSOR);
-            if(mode == GLFW_CURSOR_DISABLED) 
-                glfwSetInputMode(get().handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            else if(mode == GLFW_CURSOR_NORMAL)
-                glfwSetInputMode(get().handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        }
     }
 
     public static void update(){

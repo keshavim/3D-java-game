@@ -5,6 +5,7 @@ import java.util.List;
 
 import towerdefender.ecs.GameObject;
 import towerdefender.engine.Camera;
+import towerdefender.gfx.Texture;
 
 public abstract class Scene {
 
@@ -17,6 +18,7 @@ public abstract class Scene {
     protected Camera camera;
 
     protected List<GameObject> gameObjects = new ArrayList<>();
+    protected Texture.Cache textureCache;
 
 
     public abstract void init();
@@ -55,14 +57,19 @@ public abstract class Scene {
         currentScene.init();
         currentScene.start();
     }
+    public Camera getCamera() {
+        return camera;
+    }
+    public Texture.Cache getTextureCache() {
+        return textureCache;
+    }
     public static Scene getCurrentScene() {
         return currentScene;
     }
     public static void updateCurrentScene(float dt){
         currentScene.update(dt);
     }
-
-    public Camera getCamera() {
-        return camera;
+    public static Texture.Cache getCurrentCache() {
+        return currentScene.textureCache;
     }
 }

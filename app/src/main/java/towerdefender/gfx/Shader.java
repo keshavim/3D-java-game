@@ -1,11 +1,11 @@
 package towerdefender.gfx;
 
+import org.lwjgl.system.MemoryStack;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -132,6 +132,7 @@ public class Shader {
         try(MemoryStack stack = MemoryStack.stackPush()){
             glUniformMatrix4fv(getLocation(name), false, value.get(stack.mallocFloat(16)));
         }
+        
     }
 
 

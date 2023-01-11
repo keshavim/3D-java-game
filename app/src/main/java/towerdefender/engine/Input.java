@@ -52,9 +52,16 @@ public class Input {
 
         glfwSetKeyCallback(windowHandle, (handle, key, scancode, action, mods) -> {
             get().keys[key] = action != GLFW_RELEASE;//makes it true if pressed or repeated
+
+            if(key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE){
+                glfwSetWindowShouldClose(handle, true);
+            }
+            if(key == GLFW_KEY_TAB && action == GLFW_RELEASE){
+                int mode = glfwGetInputMode(handle, GLFW_CURSOR);
+                glfwSetInputMode(handle, GLFW_CURSOR,
+                    mode == GLFW_CURSOR_NORMAL ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+            }
         });
-
-
     }
     public static void mouseInput(){
         //gets the amount the mouse moves, delta position

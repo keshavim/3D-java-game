@@ -8,6 +8,7 @@ import towerdefender.gfx.Renderer;
 import towerdefender.scene.Scene;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 
 //contains the game loop
 public class Game {
@@ -26,6 +27,9 @@ public class Game {
         float endTime;
         float deltaTime = -1.0f;
 
+        
+        int counter = 0;
+
         while(!Window.shouldClose()){
             Window.pollEvents();
 
@@ -38,6 +42,11 @@ public class Game {
             endTime = (float)glfwGetTime();
             deltaTime = endTime - startTime;
             startTime = endTime;
+            counter++;
+            if(counter >= 60){
+                glfwSetWindowTitle(Window.getHandle(), "|TowerDefender| FPS:"+(1.0f/deltaTime)+" ms:"+(deltaTime*1000));
+                counter = 0;
+            }
         }
     }
     private void cleanup(){

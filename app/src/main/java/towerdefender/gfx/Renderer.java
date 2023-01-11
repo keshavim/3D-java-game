@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.Callback;
 
-
+import towerdefender.engine.Window;
 
 import static org.lwjgl.opengl.GL30.*;
 
@@ -26,11 +26,16 @@ public class Renderer {
         bg = new Vector4f();
 
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     public void render(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(bg.x,bg.y,bg.z,bg.w);
+        glViewport(0, 0, Window.getWidth(), Window.getHeight());
     }
     public static void setBg(float x, float y, float z, float w) {
         bg.set(x,y,z,w);
