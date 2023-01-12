@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import towerdefender.ecs.GameObject;
+import towerdefender.ecs.components.Collider;
 import towerdefender.engine.Camera;
 import towerdefender.gfx.Texture;
 
@@ -18,6 +19,7 @@ public abstract class Scene {
     protected Camera camera;
 
     protected List<GameObject> gameObjects = new ArrayList<>();
+    protected List<GameObject> colliderObjects = new ArrayList<>();
     protected Texture.Cache textureCache;
 
 
@@ -30,30 +32,28 @@ public abstract class Scene {
         for(GameObject obj: gameObjects){
             obj.start();
         }
+        for (GameObject gameObject : colliderObjects) {
+            gameObject.getComponent(Collider.class).setCollidableObjects(colliderObjects);
+        }
         isRunning = true;
     }
 
     public void addGameObjectToScene(GameObject obj){
         //always add
         gameObjects.add(obj);
+        if(obj.getComponent(Collider.class) != null){
+            colliderObjects.add(obj);
+        }
         //start if running
         if(isRunning){
             obj.start();
+            obj.getComponent(Collider.class).setCollidableObjects(colliderObjects);
         }
     }
 
-    public static void changeScene(int id){
+    public static void changeScene(Scene scene){
         if(currentScene != null)currentScene.cleanup();
-        switch(id){
-            case 0:
-                currentScene = new TutorialScene();
-                break;
-            case 1:
-                currentScene = new level1Scene();
-                break;
-            default:
-                throw new RuntimeException("Scene id does not exist");
-        }
+        currentScene = scene;
         currentScene.init();
         currentScene.start();
     }

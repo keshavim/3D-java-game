@@ -52,6 +52,10 @@ public class Transform extends Component{
     public void setRotation(float x, float y, float z, float angle) {
         rotation.fromAxisAngleRad(x, y, z, angle);
     }
+    public void setRotation(Quaternionf rotation) {
+        this.rotation.set(rotation);
+    }
+    
     public void rotate(float x, float y, float z, float angle){
         rotation.rotateAxis(angle, x, y, z);
     }

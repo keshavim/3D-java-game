@@ -14,7 +14,7 @@ public class Camera {
     private Vector2f rotation;
 
     private final float fov = (float)Math.toRadians(60), zNear = 0.1f, zFar = 1000f;
-    private final float speed = 4;
+    
 
     public Camera(Vector3f position){
         this.position = position;
@@ -31,24 +31,7 @@ public class Camera {
         adjustProjection(Window.getWidth(), Window.getHeight());
 
     }
-    public void update(float dt){
-        // test camera movement
-        if(Input.keyPressed(GLFW_KEY_A))
-            this.moveLeft(speed * dt);
-        if(Input.keyPressed(GLFW_KEY_D))
-            this.moveRight(speed * dt);
-        if(Input.keyPressed(GLFW_KEY_UP))
-            this.moveUp(speed * dt);
-        if(Input.keyPressed(GLFW_KEY_DOWN))
-            this.moveDown(speed * dt);
-        if(Input.keyPressed(GLFW_KEY_W))
-            this.moveForward(speed * dt);
-        if(Input.keyPressed(GLFW_KEY_S))
-            this.moveBackward(speed * dt);
-        
-        this.addRotation(Input.getDeltaPos().y * dt,
-                            Input.getDeltaPos().x * dt);
-    }
+    
     //recaulates the view matrix from an identity with new rotation and position values
     public void recalculate(){
         viewMatrix.identity()
@@ -62,15 +45,10 @@ public class Camera {
     }
 
     public void move(float xInc, float yInc, float zInc){
-        viewMatrix.positiveX(right).mul(xInc);
-        position.add(right);
-
-        viewMatrix.positiveY(up).mul(xInc);
-        position.add(up);
-
-        viewMatrix.positiveZ(direction).negate().mul(xInc);
-        position.add(direction);
-
+        moveRight(xInc); 
+        moveUp(yInc); 
+        moveForward(zInc); 
+        
         recalculate();
     }
 
@@ -112,6 +90,10 @@ public class Camera {
         position.set(x,y,z);
         recalculate();
     }
+    public void setPosition(Vector3f other){
+        position.set(other);
+        recalculate();
+    }
     public Vector3f getPosition(){return position;}
 
     public void setRotation(float x, float y){
@@ -122,6 +104,7 @@ public class Camera {
         rotation.add((float)Math.toRadians(x), (float)Math.toRadians(y));
         recalculate();
     }
+    
 
     public Matrix4f getViewMatrix(){return viewMatrix;}
     public Matrix4f getProjectionMatrix() {

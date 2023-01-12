@@ -34,11 +34,11 @@ public class Renderer {
 
     public void render(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(bg.x,bg.y,bg.z,bg.w);
         glViewport(0, 0, Window.getWidth(), Window.getHeight());
     }
     public static void setBg(float x, float y, float z, float w) {
         bg.set(x,y,z,w);
+        glClearColor(bg.x,bg.y,bg.z,bg.w);
     }
     public static Vector4f getBg() {
         return bg;
@@ -46,6 +46,7 @@ public class Renderer {
 
     public void cleanup(){
         if(debugproc != null) debugproc.free();
+        curentShader.cleanup();
     }
 
     public static void bindShader(Shader shader){

@@ -5,7 +5,9 @@ package towerdefender;
 
 import towerdefender.engine.Window;
 import towerdefender.gfx.Renderer;
+import towerdefender.gfx.Shader;
 import towerdefender.scene.Scene;
+import towerdefender.scene.TutorialScene;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
@@ -20,20 +22,22 @@ public class Game {
     private void init(){
         Window.init("blank", 1000, 1000);
         renderer = new Renderer();
-        Scene.changeScene(0);
+        Scene.changeScene(new TutorialScene());
     }
     private void loop(){
         float startTime = (float)glfwGetTime();
         float endTime;
         float deltaTime = -1.0f;
-
-        
         int counter = 0;
+
+
+        Shader defaultS = new Shader("Default.glsl");
 
         while(!Window.shouldClose()){
             Window.pollEvents();
 
             renderer.render();
+            Renderer.bindShader(defaultS);
             if(deltaTime >= 0)
                 Scene.getCurrentScene().update(deltaTime);
             
