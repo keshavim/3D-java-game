@@ -3,6 +3,7 @@
  */
 package towerdefender;
 
+import towerdefender.engine.ImGuiLayer;
 import towerdefender.engine.Window;
 import towerdefender.gfx.Renderer;
 import towerdefender.gfx.Shader;
@@ -10,59 +11,67 @@ import towerdefender.scene.Scene;
 import towerdefender.scene.TutorialScene;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 
 //contains the game loop
 public class Game {
 
     Renderer renderer;
+
     public static void main(String[] args) {
+
         new Game().run();
     }
-    private void init(){
+
+    private void init() {
+
         Window.init("blank", 1000, 1000);
         renderer = new Renderer();
         Scene.changeScene(new TutorialScene());
+
+        ImGuiLayer.init();
     }
-    private void loop(){
-        float startTime = (float)glfwGetTime();
+
+    private void loop() {
+        float startTime = (float) glfwGetTime();
         float endTime;
         float deltaTime = -1.0f;
-        int counter = 0;
 
+        Shader defaultS = new Shader("DefaultColor.glsl");
 
-        Shader defaultS = new Shader("Default.glsl");
+        while (!Window.shouldClose()) {
 
-        while(!Window.shouldClose()){
-            Window.pollEvents();
-
-            renderer.render();
-            Renderer.bindShader(defaultS);
-            if(deltaTime >= 0)
-                Scene.getCurrentScene().update(deltaTime);
-            
-            Window.update();
-
-            endTime = (float)glfwGetTime();
+            // *time management
+            endTime = (float) glfwGetTime();
             deltaTime = endTime - startTime;
             startTime = endTime;
-            counter++;
-            if(counter >= 60){
-                glfwSetWindowTitle(Window.getHandle(), "|TowerDefender| FPS:"+(1.0f/deltaTime)+" ms:"+(deltaTime*1000));
-                counter = 0;
-            }
+
+            // *render game */
+            renderer.clearBuffer();
+            Renderer.bindShader(defaultS);
+            Scene.getCurrentScene().update(deltaTime);
+
+            // *render imgui */
+            ImGuiLayer.startRender();
+            ImGuiLayer.update(deltaTime);
+            ImGuiLayer.endRender();
+
+            Window.update();
+
         }
     }
-    private void cleanup(){
+
+    private void cleanup() {
         Window.cleanup();
         renderer.cleanup();
         Scene.getCurrentScene().cleanup();
+
+        ImGuiLayer.cleanup();
     }
 
-    public void run(){
+    public void run() {
         init();
         loop();
         cleanup();
     }
-    
+
 }

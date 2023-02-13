@@ -7,6 +7,8 @@ import org.joml.Vector3f;
 
 import towerdefender.ecs.components.Transform;
 
+import towerdefender.scene.Scene;
+
 import java.util.ArrayList;
 
 //gameobject: it does things based on the componets it has within it
@@ -14,39 +16,54 @@ public class GameObject {
     private String name;
     private List<Component> components;
 
-    public GameObject(String name){
-        this.name = name;
-        components = new ArrayList<>();
+    private GameObject parent;
+    private List<GameObject> children;
+    public Transform transform;
+
+    public GameObject(String name) {
+        init(name);
         addComponent(new Transform());
+        transform = getComponent(Transform.class);
     }
-    public GameObject(String name, Transform transform){
-        this.name = name;
-        components = new ArrayList<>();
+
+    public GameObject(String name, Transform transform) {
+        init(name);
         addComponent(transform);
+        transform = getComponent(Transform.class);
     }
-    public GameObject(String name, Vector3f position){
-        this.name = name;
-        components = new ArrayList<>();
+
+    public GameObject(String name, Vector3f position) {
+        init(name);
         addComponent(new Transform(position));
+        transform = getComponent(Transform.class);
     }
-    public GameObject(String name, Vector3f position, Quaternionf rotation){
-        this.name = name;
-        components = new ArrayList<>();
+
+    public GameObject(String name, Vector3f position, Quaternionf rotation) {
+        init(name);
         addComponent(new Transform(position, rotation));
+        transform = getComponent(Transform.class);
     }
-    public GameObject(String name, Vector3f position, Quaternionf rotation, Vector3f scale){
+
+    public GameObject(String name, Vector3f position, Quaternionf rotation, Vector3f scale) {
+        init(name);
+        addComponent(new Transform(position, rotation, scale));
+        transform = getComponent(Transform.class);
+    }
+
+    public void init(String name) {
         this.name = name;
         components = new ArrayList<>();
-        addComponent(new Transform(position, rotation, scale));
+
     }
 
     public String getName() {
         return name;
     }
-    //returns the component if available
-    public <T extends Component> T getComponent(Class<T> componentClass){
-        for(Component c : components){
-            if(componentClass.isAssignableFrom(c.getClass())){
+
+    // returns the component if available
+    public <T extends Component> T getComponent(Class<T> componentClass) {
+        for (Component c : components) {
+            if (componentClass.isAssignableFrom(c.getClass())) {
                 try {
                     return componentClass.cast(c);
                 } catch (ClassCastException e) {
@@ -58,34 +75,47 @@ public class GameObject {
         return null;
     }
 
-    public <T extends Component> void removeComponent(Class<T> componentClass){
-        for(int i = 0; i < components.size(); i++){
+    public <T extends Component> void removeComponent(Class<T> componentClass) {
+        for (int i = 0; i < components.size(); i++) {
             Component c = components.get(i);
-            if(componentClass.isAssignableFrom(c.getClass())){
+            if (componentClass.isAssignableFrom(c.getClass())) {
                 components.remove(i);
                 return;
             }
         }
     }
 
-    public void addComponent(Component c){
+    public void addComponent(Component c) {
         components.add(c);
         c.gameObject = this;
     }
 
-    public void start(){
-        for(int i = 0; i < components.size(); i++){
+    public void start() {
+        for (int i = 0; i < components.size(); i++) {
             components.get(i).start();
         }
     }
-    public void update(float dt){
-        for(int i = 0; i < components.size(); i++){
+
+    public void update(float dt) {
+        for (int i = 0; i < components.size(); i++) {
             components.get(i).update(dt);
         }
     }
-    public void cleanup(){
-        for(int i = 0; i < components.size(); i++){
+
+    public void delete() {
+        for (int i = 0; i < components.size(); i++) {
             components.get(i).cleanup();
         }
+
+    }
+
+    public GameObject getGameObject(String name) {
+        GameObject obj = null;
+        List<GameObject> gameObjects = Scene.getCurrentScene().getGameObjects();
+        for (GameObject gameObject : gameObjects) {
+            if (gameObject.getName() == name)
+                obj = gameObject;
+        }
+        return obj;
     }
 }

@@ -1,72 +1,100 @@
 package towerdefender.scene;
 
 import towerdefender.ecs.GameObject;
-import towerdefender.ecs.Model;
+
 import towerdefender.ecs.components.Collider;
 import towerdefender.ecs.components.ModelRenderer;
 import towerdefender.ecs.components.PlayerController;
 import towerdefender.ecs.components.RigidBody;
-import towerdefender.ecs.components.Transform;
-import towerdefender.gfx.Renderer;
-import towerdefender.gfx.Shader;
-import towerdefender.gfx.Texture;
-import towerdefender.engine.Camera;
+import towerdefender.ecs.components.cubectrl;
+import towerdefender.engine.Prefabs;
+import towerdefender.gfx.Material;
+import towerdefender.gfx.Mesh;
+import towerdefender.gfx.Model;
+
 import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.tinylog.Logger;
+
+public class TutorialScene implements SceneInitalizer {
 
 
-import static org.lwjgl.opengl.GL33.glBindVertexArray;
 
 
-public class TutorialScene extends Scene{
+
     
-    @Override
-    public void init() {
+    
+    
+    
+    
+    float[] vertices = new float[] {
+        // VO
+        -0.5f, 0.5f, 0.5f,
+        // V1
+        -0.5f, -0.5f, 0.5f,
+            // V2
+            0.5f, -0.5f, 0.5f,
+            // V3
+            0.5f, 0.5f, 0.5f,
+            // V4
+            -0.5f, 0.5f, -0.5f,
+            // V5
+            0.5f, 0.5f, -0.5f,
+            // V6
+            -0.5f, -0.5f, -0.5f,
+            // V7
+            0.5f, -0.5f, -0.5f,
+    };
+    int[] indices = new int[] {
+            // Front face
+            0, 1, 3, 3, 1, 2,
+            // Top Face
+            4, 0, 3, 5, 4, 3,
+            // Right face
+            3, 2, 7, 5, 3, 7,
+            // Left face
+            6, 1, 0, 6, 0, 4,
+            // Bottom face
+            2, 1, 6, 2, 6, 7,
+            // Back face
+            7, 6, 4, 7, 4, 5,
+    };
+    Model cubeModel, bulletModel, enemyModel, towerModel;
+
+    public void loadResources(Scene scene) {
         // temp objects
         System.out.println("in tutorial");
-        textureCache = new Texture.Cache();
-        camera = new Camera( new Vector3f(0,2, 12f));
-        Model cubeModel = new Model("Magnet-Model","app/src/main/resources/models/cube/cube.obj");
+        cubeModel = new Model("Cube-Model", new Mesh(vertices, indices), new Material(new Vector4f(1, 0, 0, 1)));
 
-        GameObject player = new GameObject("player");
-        player.addComponent(new PlayerController(camera));
-        player.addComponent(new Collider());
-        addGameObjectToScene(player);
+        bulletModel = new Model("Bullet-Model", new Mesh(vertices, indices), new Material(new Vector4f(0, 0, 0, 1)));
+        enemyModel = new Model("Enemy-Model", new Mesh(vertices, indices), new Material(new Vector4f(0, 0, 1, 1)));
+        towerModel = new Model("tower-Model", new Mesh(vertices, indices), new Material(new Vector4f(0, 1, 1, 1)));
 
-        //for(int i = 0; i < 10; i++){
-        GameObject cube = new GameObject("cube");
-        cube.addComponent(new ModelRenderer(cubeModel));
-        cube.addComponent(new Collider());
-        addGameObjectToScene(cube);
+        GameObject player = Prefabs.createPlayer(scene, "Player", new Vector3f(0, 5, 5));
+        player.getComponent(PlayerController.class).bulletModel = this.bulletModel;
+
+        GameObject enemy = Prefabs.createBasicEnemy(scene, enemyModel, "Enemy", new Vector3f(0, 6, 0));
+        //enemy.addComponent(new cubectrl());
         
-        // cube = new GameObject("cube", new Vector3f(0,5,0));
-        // cube.addComponent(new Collider());
-        // cube.addComponent(new RigidBody());
-        // cube.addComponent(new ModelRenderer(cubeModel));
-        // addGameObjectToScene(cube);
+        
+        Prefabs.createBasicCube(scene, cubeModel, "ground", new Vector3f(0,0,-2), new Vector3f(100,1, 100));
 
-
-       // }
+        // e = Prefabs.createBasicCube(scene, cubeModel, "ground", new Vector3f(0,0,-3), new Vector3f(1,1, 1));
+        // e.removeComponent(Collider.class);
+        //e.addComponent(new cubectrl());
+        // Prefabs.createSpawner(scene, cubeModel, enemyModel, "spawner", new
+        // Vector3f(-7, 2,0));
+        // Prefabs.createBasicEnemy(scene, enemyModel, "enemy", new Vector3f(-7, 2, 0));
+        // GameObject t = Prefabs.createTower(scene, towerModel, "tower", new Vector3f(0, 2, 0));
+        // t.addComponent(new RigidBody(true, false));
+        // t = Prefabs.createTower(scene, towerModel, "tower", new Vector3f(4, 2, 0));
+        // t.addComponent(new RigidBody(false, false));
     }
 
-    @Override
-    public void update(float dt) {
-        
-        
-        Shader s = Renderer.getCurrentShader();
-        s.uploadUniform("uView", camera.getViewMatrix());
-        s.uploadUniform("uProj", camera.getProjectionMatrix());
-
-        s.uploadUniform("uTexture", 0);
-
-        gameObjects.forEach(o -> o.update(dt));
-
-        glBindVertexArray(0);
-        s.unBind();
-    }
-
-    @Override
     public void cleanup() {
-        gameObjects.forEach(o -> o.cleanup());
+        cubeModel.cleanup();
+        bulletModel.cleanup();
+        enemyModel.cleanup();
     }
-    
+
 }
