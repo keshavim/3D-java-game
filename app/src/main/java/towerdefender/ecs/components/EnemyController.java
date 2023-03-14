@@ -4,6 +4,7 @@ import org.joml.Vector3f;
 
 import towerdefender.ecs.Component;
 import towerdefender.ecs.GameObject;
+import towerdefender.engine.ImGuiLayer;
 import towerdefender.scene.Scene;
 
 
@@ -13,6 +14,8 @@ public class EnemyController extends Component{
     GameObject target;
     Transform transform;
     RigidBody rBody;
+    float speed;
+    float damage;
 
 
     @Override
@@ -22,21 +25,27 @@ public class EnemyController extends Component{
         target = gameObject.getGameObject("tower");
         transform = gameObject.getComponent(Transform.class);
         rBody = gameObject.getComponent(RigidBody.class);
+        speed = 0.002f;
+        damage = 0.5f;
     }
     @Override
     public void update(float dt) {
         // TODO Auto-generated method stub
-        if(collider.other != null && collider.other.getName() == "bullet"){
-            Scene.getCurrentScene().removeGameObjectFromScene(gameObject);
+        
+        for (GameObject other : collider.otherList) {
+            if(other.getName() == "tower"){
+                ImGuiLayer.towerHealth -= damage;
+                System.out.println("hit");
+                Scene.getCurrentScene().removeGameObjectFromScene(gameObject);
+            }
+            
         }
+
+
         Vector3f position = target.getComponent(Transform.class).getPosition();
         if(transform.getPosition().distance(position) > 1.3f)
-            transform.getPosition().lerp(position, 0.001f);
-
-        if(collider.other != null && collider.other.getName() == "ground"){
-            if(rBody != null)
-            transform.move(0, -rBody.gravity * dt, 0);
-        }
+            transform.getPosition().lerp(position, speed);
+        
     }
     
 }

@@ -26,7 +26,7 @@ public class Prefabs {
     }
 
     public static GameObject createBasicBullet(Scene scene, Model model, Vector3f position, Vector3f front) {
-        GameObject cube = new GameObject("bullet", position, new Quaternionf(), new Vector3f(0.25f));
+        GameObject cube = new GameObject("bullet", position, new Quaternionf(), new Vector3f(0.1f));
         cube.addComponent(new ModelRenderer(model));
         cube.addComponent(new RigidBody(false, true));
         cube.addComponent(new Collider());
@@ -40,13 +40,13 @@ public class Prefabs {
         cube.addComponent(new ModelRenderer(model));
         cube.addComponent(new Collider());
         cube.addComponent(new RigidBody(false, false));
-        //cube.addComponent(new EnemyController());
+        cube.addComponent(new EnemyController());
         scene.addGameObjectToScene(cube);
         return cube;
     }
 
     public static GameObject createTower(Scene scene, Model model, String name, Vector3f position) {
-        GameObject cube = new GameObject(name, position, new Quaternionf(), new Vector3f(1, 1, 1));
+        GameObject cube = new GameObject(name, position, new Quaternionf(), new Vector3f(1, 4, 1));
         cube.addComponent(new ModelRenderer(model));
         cube.addComponent(new Collider());
         cube.addComponent(new RigidBody(true, false));
@@ -66,7 +66,7 @@ public class Prefabs {
     public static GameObject createSpawner(Scene scene, Model thisModel, Model enemyModel, String name,
             Vector3f position) {
         GameObject cube = new GameObject(name, position, new Quaternionf(), new Vector3f(0.25f));
-        cube.addComponent(new ModelRenderer(thisModel));
+        if(thisModel != null)cube.addComponent(new ModelRenderer(thisModel));
         cube.addComponent(new SpawnerController(enemyModel));
         scene.addGameObjectToScene(cube);
         return cube;

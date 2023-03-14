@@ -41,6 +41,8 @@ public class Game {
         while (!Window.shouldClose()) {
 
             // *time management
+            ImGuiLayer.currentTime = (float) glfwGetTime();
+
             endTime = (float) glfwGetTime();
             deltaTime = endTime - startTime;
             startTime = endTime;
@@ -48,6 +50,7 @@ public class Game {
             // *render game */
             renderer.clearBuffer();
             Renderer.bindShader(defaultS);
+            
             Scene.getCurrentScene().update(deltaTime);
 
             // *render imgui */

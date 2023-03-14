@@ -63,6 +63,8 @@ public class Window {
 
         // callbacks
         Input.setCallBacks(get().handle);
+
+
         glfwSetFramebufferSizeCallback(get().handle, (window, w, h) -> {
             if (w > 0 && h > 0 && (get().fbWidth != w || get().fbHeight != h)) {
                 get().fbWidth = w;

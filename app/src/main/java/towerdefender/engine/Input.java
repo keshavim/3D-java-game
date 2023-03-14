@@ -13,8 +13,9 @@ import static org.lwjgl.glfw.GLFW.*;
 //singleton that controls Input
 public class Input {
     private static Input instance = null;
-    public static final float MOUSE_SENSITIVITY = 0.01f;
 
+    public static final float MOUSE_SENSITIVITY = 0.01f;
+    
     // for keyboard
     private boolean[] keys;
 
@@ -29,20 +30,22 @@ public class Input {
         mouseButtons = new boolean[GLFW_MOUSE_BUTTON_LAST];
         keys = new boolean[GLFW_KEY_LAST];
         firstMouse = true;
-
+        
         yaw = -90;
         pitch = 0;
     }
-
+    
+    
     public static Input get() {
         if (Input.instance == null) {
             Input.instance = new Input();
         }
         return Input.instance;
     }
-
+    
     // sets all input related callbacks
     public static void setCallBacks(long windowHandle) {
+    
         glfwSetCursorPosCallback(windowHandle, (handle, xposIn, yposIn) -> {
             float xpos = (float) xposIn;
             float ypos = (float) yposIn;
@@ -58,6 +61,7 @@ public class Input {
             Scene.getCurrentScene().getCamera().setDirection(deltax, deltay);
 
         });
+
         glfwSetMouseButtonCallback(windowHandle, (handle, button, action, mode) -> {
             get().mouseButtons[button] = action != GLFW_RELEASE;
         });
@@ -75,6 +79,7 @@ public class Input {
             }
         });
     }
+
 
     public static boolean mouseButtonPressed(int button) {
         return get().mouseButtons[button];

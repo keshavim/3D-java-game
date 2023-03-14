@@ -9,17 +9,20 @@ import towerdefender.Game;
 import towerdefender.ecs.GameObject;
 import towerdefender.ecs.components.Collider;
 import towerdefender.engine.Camera;
+import towerdefender.engine.ImGuiLayer;
+import towerdefender.engine.Input;
 import towerdefender.gfx.Renderer;
 import towerdefender.gfx.Shader;
 import towerdefender.gfx.Texture;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 public class Scene {
 
     protected static Scene currentScene = null;
 
-    protected boolean changeScene = false;
-    protected float changeTime = 1f;
-    protected boolean isRunning = false;
+
+    private boolean isRunning = false;
+
 
     protected Camera camera;
 
@@ -30,6 +33,7 @@ public class Scene {
     protected Texture.Cache textureCache;
 
     private SceneInitalizer sceneInit = null;
+
 
     public Scene(SceneInitalizer sceneInit) {
         this.sceneInit = sceneInit;
@@ -42,31 +46,44 @@ public class Scene {
     }
 
     public void update(float dt) {
-        Shader s = Renderer.getCurrentShader();
-        s.uploadUniform("uView", camera.getViewMatrix());
-        s.uploadUniform("uProj", camera.getProjectionMatrix());
-
-        // s.uploadUniform("uTexture", 0);
-
-        gameObjects.forEach(o -> o.update(dt));
-
-        for (GameObject pend : pendingAdd) {
-            gameObjects.add(pend);
-            pend.start();
-            if (pend.getComponent(Collider.class) != null) {
-                colliderObjects.add(pend);
-                pend.getComponent(Collider.class).setCollidableObjects(colliderObjects);
+        if(isRunning){
+            Shader s = Renderer.getCurrentShader();
+            s.uploadUniform("uView", camera.getViewMatrix());
+            s.uploadUniform("uProj", camera.getProjectionMatrix());
+    
+            // s.uploadUniform("uTexture", 0);
+    
+            gameObjects.forEach(o -> o.update(dt));
+    
+            for (GameObject pend : pendingAdd) {
+                gameObjects.add(pend);
+                pend.start();
+                if (pend.getComponent(Collider.class) != null) {
+                    colliderObjects.add(pend);
+                    pend.getComponent(Collider.class).setCollidableObjects(colliderObjects);
+                }
             }
+            pendingAdd.clear();
+            for (GameObject pend : pendingRemove) {
+                gameObjects.remove(pend);
+                pend.delete();
+    
+            }
+            pendingRemove.clear();
+    
+            s.unBind();
         }
-        pendingAdd.clear();
-        for (GameObject pend : pendingRemove) {
-            gameObjects.remove(pend);
-            pend.delete();
 
+        if(ImGuiLayer.towerHealth <= 0){
+            isRunning = false;
+            ImGuiLayer.startTime = ImGuiLayer.currentTime;
         }
-        pendingRemove.clear();
 
-        s.unBind();
+        if(!isRunning && Input.keyPressed(GLFW_KEY_R)){
+            this.init();
+            ImGuiLayer.init();
+            isRunning = true;
+        }
     }
 
     public void cleanup() {
@@ -140,4 +157,5 @@ public class Scene {
     public static Texture.Cache getCurrentCache() {
         return currentScene.textureCache;
     }
+
 }

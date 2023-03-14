@@ -16,7 +16,9 @@ public class RigidBody extends Component {
     @Override
     public void start() {
         // TODO Auto-generated method stub
-        gravityOn = !isStatic;
+        gravityOn = true;
+        if(isStatic || isTrigger)
+            gravityOn = false;
         
     }
 

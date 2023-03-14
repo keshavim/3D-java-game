@@ -6,7 +6,6 @@ import towerdefender.ecs.components.Collider;
 import towerdefender.ecs.components.ModelRenderer;
 import towerdefender.ecs.components.PlayerController;
 import towerdefender.ecs.components.RigidBody;
-import towerdefender.ecs.components.cubectrl;
 import towerdefender.engine.Prefabs;
 import towerdefender.gfx.Material;
 import towerdefender.gfx.Mesh;
@@ -18,15 +17,6 @@ import org.tinylog.Logger;
 
 public class TutorialScene implements SceneInitalizer {
 
-
-
-
-
-    
-    
-    
-    
-    
     float[] vertices = new float[] {
         // VO
         -0.5f, 0.5f, 0.5f,
@@ -61,6 +51,8 @@ public class TutorialScene implements SceneInitalizer {
     };
     Model cubeModel, bulletModel, enemyModel, towerModel;
 
+    
+
     public void loadResources(Scene scene) {
         // temp objects
         System.out.println("in tutorial");
@@ -73,22 +65,16 @@ public class TutorialScene implements SceneInitalizer {
         GameObject player = Prefabs.createPlayer(scene, "Player", new Vector3f(0, 5, 5));
         player.getComponent(PlayerController.class).bulletModel = this.bulletModel;
 
-        GameObject enemy = Prefabs.createBasicEnemy(scene, enemyModel, "Enemy", new Vector3f(0, 6, 0));
-        //enemy.addComponent(new cubectrl());
-        
         
         Prefabs.createBasicCube(scene, cubeModel, "ground", new Vector3f(0,0,-2), new Vector3f(100,1, 100));
 
-        // e = Prefabs.createBasicCube(scene, cubeModel, "ground", new Vector3f(0,0,-3), new Vector3f(1,1, 1));
-        // e.removeComponent(Collider.class);
-        //e.addComponent(new cubectrl());
-        // Prefabs.createSpawner(scene, cubeModel, enemyModel, "spawner", new
-        // Vector3f(-7, 2,0));
-        // Prefabs.createBasicEnemy(scene, enemyModel, "enemy", new Vector3f(-7, 2, 0));
-        // GameObject t = Prefabs.createTower(scene, towerModel, "tower", new Vector3f(0, 2, 0));
-        // t.addComponent(new RigidBody(true, false));
-        // t = Prefabs.createTower(scene, towerModel, "tower", new Vector3f(4, 2, 0));
-        // t.addComponent(new RigidBody(false, false));
+        
+        Prefabs.createTower(scene, towerModel, "tower", new Vector3f(0, 2, 0));
+        
+        Prefabs.createSpawner(scene, null, enemyModel, "spawner", new Vector3f(50, 4, 0));
+        // Prefabs.createSpawner(scene, null, enemyModel, "spawner", new Vector3f(-50, 4, 0));
+        // Prefabs.createSpawner(scene, null, enemyModel, "spawner", new Vector3f(0, 4, 50));
+        // Prefabs.createSpawner(scene, null, enemyModel, "spawner", new Vector3f(0, 4, -50));
     }
 
     public void cleanup() {

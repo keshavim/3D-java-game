@@ -22,6 +22,7 @@ public class Mesh {
 
         vboList = new ArrayList<>();
 
+        //*no need for GL33. */
         vao = glGenVertexArrays();
         glBindVertexArray(vao);
 

@@ -16,7 +16,7 @@ public class Collider extends Component {
     private List<GameObject> collidableObjects;
     public static int ANY = 0, LEFT = 1, RIGHT = 2, TOP = 3, BOTTOM = 4, FRONT = 5, BACK = 6;
     private boolean[] side;
-    public GameObject other = null;
+    public List<GameObject> otherList = new ArrayList<>();
     private Vector3f tpMin, tpMax, opMin, opMax, range;
 
     public Collider() {
@@ -79,10 +79,10 @@ public class Collider extends Component {
         float yDist = Vector3f.distance(0, tpMin.y, 0, 0, opMax.y, 0);
         float zDist = Vector3f.distance(0, 0, tpMin.z, 0, 0, opMax.z);
 
-        if(other.getName() == "ground"){
-            ImGuiLayer.opMax = opMax;
-            ImGuiLayer.opMin = opMin;
-            ImGuiLayer.dist_cmin_to_tmax = new Vector3f(xDist, yDist, zDist);
+        if(thisObject.getName() == "bullet"){
+            ImGuiLayer.tpMax = tpMax;
+            ImGuiLayer.tpMin = tpMin;
+            //ImGuiLayer.dist_cmin_to_tmax = new Vector3f(xDist, yDist, zDist);
         }
 
         
@@ -97,16 +97,16 @@ public class Collider extends Component {
 
         if (check_back && check_bottom && check_front && check_left && check_right && check_top) {
             side[ANY] = true;
-            this.other = other;
+            this.otherList.add(other);
 
             //TODO:improve collision so it can detect static objects and movable objects
             boolean tstatic = thisObject.getComponent(RigidBody.class).isStatic;
-            boolean otrigger = other.getComponent(RigidBody.class).isTrigger;
+            boolean ttrigger = thisObject.getComponent(RigidBody.class).isTrigger;
 
 
-            if(!tstatic ){
+            if(!tstatic && !ttrigger){
 
-                if (xDist < 0.1) {
+                if (xDist < 0.1 ) {
                     side[LEFT] = true;
                     tbase.set(opMax.x, tbase.y, tbase.z);
 
@@ -142,7 +142,7 @@ public class Collider extends Component {
         for (int i = 0; i < side.length; i++) {
             side[i] = false;
         }
-        other = null;
+        otherList.clear();;
     }
 
     public void setRange(float x, float y, float z) {

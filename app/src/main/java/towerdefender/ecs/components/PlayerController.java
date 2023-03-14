@@ -20,6 +20,7 @@ public class PlayerController extends Component {
     private Collider collider;
     public Model bulletModel;
     private float shootSpeed, shootInterval;
+    GameObject lastBul = null;
 
     private final float speed = 4;
     private float jumpForce = 0;
@@ -48,17 +49,17 @@ public class PlayerController extends Component {
         shootInterval -= dt;
 
         if (Input.keyPressed(GLFW_KEY_E) && shootInterval <= 0) {
-            Vector3f position = new Vector3f();
-            mainCamera.getPosition().add(mainCamera.getFront(), position);
-            Prefabs.createBasicBullet(Scene.getCurrentScene(), bulletModel, position,
+            if(lastBul != null)
+                Scene.getCurrentScene().removeGameObjectFromScene(lastBul);
+
+            Vector3f position = new Vector3f(mainCamera.getPosition());
+            position.add(mainCamera.getFront());
+            lastBul = Prefabs.createBasicBullet(Scene.getCurrentScene(), bulletModel, position,
                     new Vector3f(mainCamera.getFront()));
             shootInterval = shootSpeed;
         }
 
-        if (collider.other != null && collider.other.getName() == "ground") {
-            if (rBody != null)
-                transform.move(0, -rBody.gravity * dt, 0);
-        }
+        
         
 
     }
